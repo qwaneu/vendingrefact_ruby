@@ -1,73 +1,101 @@
-require 'enum'
+require 'enums'
+require 'can_container'
 
 class VendingMachine
+  CHIP = 1
+  CASH = 2
+
   def initialize
     @cans = {}
   end
   
   def set_value(v)
-    @c = v
+    @payment_method = CASH
+    if (@c != nil)
+      @c += v
+    else 
+      @c = v
+    end
+  end
+
+  def insert_chip(chipknip)
+    @payment_method = CHIP
+    @chipknip = chipknip
   end
 
   # delivers the can if all ok
   def deliver(choice)
     res = nil
+    #
+    #step 1: check if choice exists
+    #
     if @cans.has_key?(choice)
-      # check price
+      #
+      # step2 : check price
+      #
       if @cans[choice].price == 0 
         res = @cans[choice].type
       # or price matches
-      elsif @c != nil 
-        if  @cans[choice].price <= @c
-          res = @cans[choice].type
-          @c -= @cans[choice].price
+      else
+        case @payment_method
+        when CASH
+          if @c != nil && @cans[choice].price <= @c
+            res = @cans[choice].type
+            @c -= @cans[choice].price
+          end
+        when CHIP
+          if (@chipknip.has_value?(@cans[choice].price))
+            @chipknip.reduce(1)
+            res = @cans[choice].type
+          end
+        else
+          # unknown payment
         end
       end
     else
       res = Can.none
     end
 
+    #
+    # step 3: check stock
+    #
+    if (res && res != Can.none)
+      if (@cans[choice].amount <= 0)
+        res = Can.none
+      else
+        @cans[choice].amount -= 1
+      end
+    end
+
     # if can is set then return 
     # otherwise we need to return the none
     if (res == nil)
       return Can.none
-    else 
-      return res
     end
+
+    return res
   end
-  
-  def configure(choice, c, price = 0)
+
+  def get_change()
+    to_return = 0
+    if (@c > 0)
+      to_return = @c
+      @c = 0
+    end
+    return to_return
+  end
+
+  def configure(choice, c, n, price = 0)
     @price = price
+    if (@cans.has_key?(choice)) 
+      @cans[choice].amount += n
+      return
+    end
     can = CanContainer.new
     can.type = c
+    can.amount = n
     can.price = price
     @cans[choice] = can
   end
-end
-
-class CanContainer
-  def type=(t)
-    @the_type = t
-  end
-
-  def type
-    return @the_type
-  end
-
-  def price=(p) 
-    @p = p
-  end
-
-  def price
-    @p
-  end
-end
-
-class Can < Enum
-  values :none, :cola, :fanta, :sprite
-end
-
-class Choice < Enum
-  values :cola, :fanta, :sprite, :beer
 end
 
