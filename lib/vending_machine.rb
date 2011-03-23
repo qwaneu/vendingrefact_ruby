@@ -2,15 +2,13 @@ require 'enums'
 require 'can_container'
 
 class VendingMachine
-  CHIP = 1
-  CASH = 2
 
   def initialize
     @cans = {}
   end
   
   def set_value(v)
-    @payment_method = CASH
+    @payment_method = 1
     if (@c != nil)
       @c += v
     else 
@@ -19,7 +17,9 @@ class VendingMachine
   end
 
   def insert_chip(chipknip)
-    @payment_method = CHIP
+    # TODO
+    # can't pay with chip in brittain
+    @payment_method = 2
     @chipknip = chipknip
   end
 
@@ -38,18 +38,23 @@ class VendingMachine
       # or price matches
       else
         case @payment_method
-        when CASH
+        when 1 # paying with coins
           if @c != nil && @cans[choice].price <= @c
             res = @cans[choice].type
             @c -= @cans[choice].price
           end
-        when CHIP
+        when 2 # paying with chipknip - 
+          # TODO: if this machine is in belgium this must be an error
           if (@chipknip.has_value?(@cans[choice].price))
             @chipknip.reduce(@cans[choice].price)
             res = @cans[choice].type
           end
         else
-          # unknown payment
+          # TODO: Is this a valid situation?:
+          #   larry forgot the else clause 
+          #   i added it, but i am acutally not sure as to wether this is a problem
+          #   unknown payment
+          #     i think(i) nobody inserted anything
         end
       end
     else
@@ -67,7 +72,7 @@ class VendingMachine
       end
     end
 
-    # if can is set then return 
+    # if can is set then return
     # otherwise we need to return the none
     if (res == nil)
       return Can.none
