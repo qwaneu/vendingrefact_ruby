@@ -45,7 +45,7 @@ class VendingMachine
           end
         when CHIP
           if (@chipknip.has_value?(@cans[choice].price))
-            @chipknip.reduce(1)
+            @chipknip.reduce(@cans[choice].price)
             res = @cans[choice].type
           end
         else
