@@ -1,3 +1,7 @@
+#
+# (c) Quality Without A Name 2011
+#     Refactoring Course material
+#
 class Enum
     def initialize(type)
         @type = type

@@ -1,4 +1,8 @@
 #
+# (c) Quality Without A Name 2011
+#     Refactoring Course material
+#
+#
 # this is the container of cans
 # 
 class CanContainer

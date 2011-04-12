@@ -1,3 +1,7 @@
+#
+# (c) Quality Without A Name 2011
+#     Refactoring Course material
+#
 class Chipknip
   attr_reader :credits
   def initialize(initial_value)

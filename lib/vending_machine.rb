@@ -1,3 +1,7 @@
+#
+# (c) Quality Without A Name 2011
+#     Refactoring Course material
+#
 require 'enums'
 require 'can_container'
 

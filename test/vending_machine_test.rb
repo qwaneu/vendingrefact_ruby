@@ -1,3 +1,7 @@
+#
+# (c) Quality Without A Name 2011
+#     Refactoring Course material
+#
 require File.join(File.dirname(__FILE__),'test_helper')
 
 require 'vending_machine'
