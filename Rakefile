@@ -1,10 +1,8 @@
 require 'rubygems'
-require 'rake/testtask'
-
+require 'rspec/core/rake_task'
 
 desc 'Running all unit tests'
-task :default => :test
+task :default => :rspec
 
-Rake::TestTask.new(:test) do |t|
-  t.test_files = FileList['test/**/*test.rb', 'test/*test.rb']
-end
+RSpec::Core::RakeTask.new(:rspec)
+
