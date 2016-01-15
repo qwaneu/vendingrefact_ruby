@@ -3,6 +3,7 @@
 #     Refactoring Course material
 #
 class Enum
+  class NoEnumValueError < RuntimeError; end
   def initialize(type)
     @type = type
   end
@@ -13,7 +14,7 @@ class Enum
     begin
       self.send('class_variable_get',"@@#{method}")
     rescue 
-      raise "Enum constant '#{method}' not defined in #{self}"
+      raise NoEnumValueError.new("Enum constant '#{method}' not defined in #{self}")
     end
   end
   def self.values(*values)
